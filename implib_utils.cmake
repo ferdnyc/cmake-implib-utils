@@ -81,7 +81,9 @@ include_guard(DIRECTORY)
 include(CMakeParseArguments)
 
 if (NOT WIN32)
-  # Nothing to do here!
+  # Make fix_implib() a no-op
+  function(fix_implib)
+  endfunction()
   return()
 endif()
 
