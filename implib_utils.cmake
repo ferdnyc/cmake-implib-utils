@@ -235,7 +235,7 @@ macro(fix_implib)
     set(_implib "${_lib}")
     unset(_lib)
     if(EXISTS "${_implib}")
-      find_dll(_dll "${_implib}" "${_cachevar}${_sfx}" ${_search_paths})
+      find_dll(_dll "${_implib}" "${_cachevar}${_sfx}" "${_search_paths}")
       if(NOT "${_dll}" STREQUAL "${_cachevar}${_sfx}-NOTFOUND")
         set_target_properties(${FindImpLib_TARGET} PROPERTIES
           IMPORTED_IMPLIB${_sfx} "${_implib}"
