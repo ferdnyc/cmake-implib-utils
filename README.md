@@ -117,3 +117,12 @@ have been created by a Find module or a `Config.cmake` package.
 Multiple-configuration targets are also supported.
 `fix_implib()` processes `IMPORTED_LOCATION_RELEASE`,
 `IMPORTED_LOCATION_DEBUG`, etc. in addition to `IMPORTED_LOCATION`.
+
+## License
+
+The code is licensed under the
+[Creative Commons CC0-1.0 license](https://creativecommons.org/publicdomain/zero/1.0/legalcode),
+which basically means you can do whatever you want with it.
+Modify it, redistribute it, sell it,
+remove my name and pass it off as your own — anything goes.
+I really don't care.
