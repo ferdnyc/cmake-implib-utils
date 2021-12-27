@@ -1,3 +1,10 @@
+<!--
+© 2021 FeRD (Frank Dana)
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
+
 # CMake Win32 IMPORTED library utils
 
 Tools for managing/correcting CMake `IMPORTED_LOCATION` and `IMPORTED_IMPLIB` properties on Windows library targets.

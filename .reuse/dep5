@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: cmake-implib-utils
+Upstream-Contact: FeRD (Frank Dana) <ferdnyc@gmail.com>
+Source: https://github.com/ferdnyc/cmake-implib-utils
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
