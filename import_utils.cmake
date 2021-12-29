@@ -106,6 +106,8 @@ macro(_get_if_set out tgt prop)
   # sets the BOOL variable 'out_SET',
   # and if it is defined, reads the property value into
   # the variable 'out'
+  unset(${out})
+  unset(${out}_SET)
   get_property(${out}_SET TARGET ${tgt} PROPERTY ${prop} SET)
   if (${out}_SET)
     get_property(${out} TARGET ${tgt} PROPERTY ${prop})
@@ -205,22 +207,22 @@ macro(fix_imports)
 
   # Look up which configs we (might) have to find DLLs for, beyond
   # the anonymous default one that we'll always check
-  set(_suffixes "")
+  set(_no_type_suffixes TRUE)
   _get_if_set(_cfgs ${FixImports_TARGET} IMPORTED_CONFIGURATIONS)
-  if(NOT _cfgs_SET)
-    set(_no_type_suffixes TRUE)
-  else()
+  if(_cfgs_SET)
+    set(_no_type_suffixes FALSE)
     foreach(_c IN LISTS _cfgs)
       list(APPEND _suffixes "_${_c}")
     endforeach()
-    set(_no_type_suffixes FALSE)
+  else()
+    set(_suffixes "")
   endif()
 
   # Match the import library for each configuration (including
   # the anonymous one) up with the corresponding runtime DLL,
   # adding "_<CONFIGURATION>" as the suffix for all property names
   # when processing one of the IMPORTED_CONFIGURATIONS types.
-  foreach(_sfx IN LISTS _suffixes)
+  foreach(_sfx IN ITEMS "" LISTS _suffixes)
     _get_if_set(_lib ${FixImports_TARGET} IMPORTED_LOCATION${_sfx})
     _get_if_set(_implib ${FixImports_TARGET} IMPORTED_IMPLIB${_sfx})
     message(DEBUG "${FixImports_TARGET} IMPORTED_LOCATION${_sfx}: '${_lib}'")
@@ -234,7 +236,7 @@ macro(fix_imports)
       continue()
     elseif("${_lib}" MATCHES "\\.dll$")
       message(DEBUG
-        "${FindImpLib_TARGET}.${_lib} is already a DLL path, ignoring")
+        "${FixImports_TARGET}.${_lib} is already a DLL path, ignoring")
       continue()
     endif()
     if(NOT "${_lib}" MATCHES "(\\.lib|\\.dll\\.a)$")
@@ -254,7 +256,7 @@ macro(fix_imports)
           IMPORTED_LOCATION${_sfx} "${_dll}"
       )
       endif()
-      message(DEBUG "Set ${FixImports_TARGET} IMPORTED_LOCATION${_sfx} to ${_dll}}")
+      message(DEBUG "Set ${FixImports_TARGET} IMPORTED_LOCATION${_sfx} to ${_dll}")
     endif()
   endforeach()
 endmacro()
