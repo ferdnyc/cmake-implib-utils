@@ -100,12 +100,23 @@ if (NOT DEFINED DLLTOOL_EXECUTABLE)
   message(DEBUG "Found dlltool at ${DLLTOOL_EXECUTABLE}")
 endif()
 
-### Function: find_dll
-#
-# (Win32 only)
-# Uses dlltool.exe to find the name of the dll associated with the
-# supplied import library.
-function(find_dll _outvar _implib _cachevar _paths)
+
+macro(_get_if_set out tgt prop)
+  # Checks whether the property 'prop' is defined on 'tgt',
+  # sets the BOOL variable 'out_SET',
+  # and if it is defined, reads the property value into
+  # the variable 'out'
+  get_property(${out}_SET TARGET ${tgt} PROPERTY ${prop} SET)
+  if (${out}_SET)
+    get_property(${out} TARGET ${tgt} PROPERTY ${prop})
+  endif()
+endmacro()
+
+
+function(_find_dll _outvar _implib _cachevar _paths)
+  # (Win32 only)
+  # Uses dlltool.exe to find the name of the dll associated with the
+  # supplied import library.
   message(DEBUG "Looking up dll name for import library ${_implib}")
   execute_process(COMMAND
     "${DLLTOOL_EXECUTABLE}" -I "${_implib}"
@@ -136,7 +147,8 @@ function(find_dll _outvar _implib _cachevar _paths)
   set(${_outvar} "${${_cachevar}}" PARENT_SCOPE)
 endfunction()
 
-# Function:
+
+macro(fix_imports)
 # fix_imports(TARGET target [PACKAGE_NAME package] [PATHS paths])
 #
 # (Win32 only)
@@ -162,7 +174,6 @@ endfunction()
 #  - One or more directory locations which will be added to the
 #    ``find_program()`` call used to locate the DLL
 #
-macro(fix_imports)
   set(options)
   set(oneValueArgs TARGET PACKAGE_NAME)
   set(multiValueArgs PATHS)
@@ -194,9 +205,9 @@ macro(fix_imports)
 
   # Look up which configs we (might) have to find DLLs for, beyond
   # the anonymous default one that we'll always check
-  set(_suffixes ";")
-  get_target_property(_cfgs ${FixImports_TARGET} IMPORTED_CONFIGURATIONS)
-  if("${_cfgs}" STREQUAL "_cfgs-NOTFOUND")
+  set(_suffixes "")
+  _get_if_set(_cfgs ${FixImports_TARGET} IMPORTED_CONFIGURATIONS)
+  if(NOT _cfgs_SET)
     set(_no_type_suffixes TRUE)
   else()
     foreach(_c IN LISTS _cfgs)
@@ -210,20 +221,20 @@ macro(fix_imports)
   # adding "_<CONFIGURATION>" as the suffix for all property names
   # when processing one of the IMPORTED_CONFIGURATIONS types.
   foreach(_sfx IN LISTS _suffixes)
-    get_target_property(_lib ${FixImports_TARGET} IMPORTED_LOCATION${_sfx})
-    get_target_property(_implib ${FixImports_TARGET} IMPORTED_IMPORT${_sfx})
+    _get_if_set(_lib ${FixImports_TARGET} IMPORTED_LOCATION${_sfx})
+    _get_if_set(_implib ${FixImports_TARGET} IMPORTED_IMPLIB${_sfx})
     message(DEBUG "${FixImports_TARGET} IMPORTED_LOCATION${_sfx}: '${_lib}'")
-    message(DEBUG "${FixImports_TARGET} IMPORTED_IMPORT${_sfx}: '${_implib}'")
-    if("${_lib}" MATCHES "\\.dll$")
-      # Already good! Nothing to do for this one
-      continue()
-    endif()
-    if("${_lib}" STREQUAL "_lib-NOTFOUND")
+    message(DEBUG "${FixImports_TARGET} IMPORTED_IMPLIB${_sfx}: '${_implib}'")
+    if(NOT _lib_SET OR _lib_SET AND "${_lib}" STREQUAL "")
       # Don't complain if we still have build type suffixes to process
       if("${_sfx}" STREQUAL "" AND ${_no_type_suffixes})
         message(SEND_ERROR
           "Target ${FixImports_TARGET} properties incorrectly defined!")
       endif()
+      continue()
+    elseif("${_lib}" MATCHES "\\.dll$")
+      message(DEBUG
+        "${FindImpLib_TARGET}.${_lib} is already a DLL path, ignoring")
       continue()
     endif()
     if(NOT "${_lib}" MATCHES "(\\.lib|\\.dll\\.a)$")
@@ -236,10 +247,10 @@ macro(fix_imports)
     set(_implib "${_lib}")
     unset(_lib)
     if(EXISTS "${_implib}")
-      find_dll(_dll "${_implib}" "${_cachevar}${_sfx}" "${_search_paths}")
+      _find_dll(_dll "${_implib}" "${_cachevar}${_sfx}" "${_search_paths}")
       if(NOT "${_dll}" STREQUAL "${_cachevar}${_sfx}-NOTFOUND")
         set_target_properties(${FixImports_TARGET} PROPERTIES
-          IMPORTED_IMPORT${_sfx} "${_implib}"
+          IMPORTED_IMPLIB${_sfx} "${_implib}"
           IMPORTED_LOCATION${_sfx} "${_dll}"
       )
       endif()
