@@ -11,11 +11,9 @@
 name: Validate source licensing
 
 on:
-  # Triggers the workflow on push or pull request events but only for the develop branch
+  # Triggers the workflow on push or pull request events
   push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
