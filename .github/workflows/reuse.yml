@@ -1,6 +1,6 @@
-# © OpenShot Studios, LLC
+# © 2021 FeRD (Frank Dana)
 #
-# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-License-Identifier: CC0-1.0
 
 # Workflow to run 'reuse lint' via the reuse-action script,
 # which will flag any files added or changed in the repo
