@@ -32,7 +32,7 @@ This module is intended for use by Find module authors,
 to aid them in creating correct targets on Windows platforms.
 I had hoped that it would be useful to endusers as well,
 so they could repair bad targets produced by Find modules.
-Unfortunately, see [issue #1](issues/1) for why that doesn't work.
+Unfortunately, see [issue #1](../../issues/1) for why that doesn't work.
 
 When writing a Find module, just copy `implib_utils.cmake` into your project,
 `include()` it, and create `SHARED IMPORTED` targets for your libraries,
