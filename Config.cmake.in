@@ -1,0 +1,7 @@
+#
+#
+#
+@PACKAGE_INIT@
+
+set(IMPORT_UTILS_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/import_utils.cmake")
+
