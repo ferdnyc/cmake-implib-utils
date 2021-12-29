@@ -89,19 +89,24 @@ find_package_handle_standard_args(Dependency
 
 if (NOT TARGET Dependency::lib)
   add_library(Dependency::lib SHARED IMPORTED)
+  
   set_property(TARGET Dependency::lib PROPERTY
     IMPORTED_LOCATION ${Dependency_LIBRARY})
+    
   if (Dependency_DEBUG_LIBRARY)
     set_property(TARGET Dependency::lib PROPERTY
       IMPORTED_LOCATION_DEBUG ${Dependency_LIBRARY})
     set_property(TARGET Dependency::lib APPEND PROPERTY
       IMPORTED_CONFIGURATIONS DEBUG)
   endif()
+  
   set_property(TARGET Dependency::lib PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${Dependency_INCLUDE_DIRS})
+    
   # This will correct IMPORTED_LOCATION, as well as any
   # other configurations set in IMPORTED_CONFIGURATIONS
   fix_implib(TARGET Dependency::lib)
+  
 endif()
 ```
 That's all there is to it.
