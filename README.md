@@ -71,7 +71,7 @@ find_path(Dependency_INCLUDE_DIR
 )
 
 if (Dependency_LIBRARY)
-  list(APPEND Dependency_LIBRARIES ${Dependency_LIBRARY}
+  list(APPEND Dependency_LIBRARIES ${Dependency_LIBRARY})
 endif()
 if (Dependency_DEBUG_LIBRARY)
   list(APPEND Dependency_LIBRARIES ${Dependency_DEBUG_LIBRARY})
