@@ -84,7 +84,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Dependency
   REQUIRED_VARS
     Dependency_LIBRARIES
-    DEPENDENCY_INCLUDE_DIRS
+    Dependency_INCLUDE_DIRS
 )
 
 if (NOT TARGET Dependency::lib)
