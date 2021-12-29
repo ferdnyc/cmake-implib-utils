@@ -133,9 +133,9 @@ and they make it incredibly difficult to create `SHARED IMPORTED` targets.
    Then we went and put that into the **wrong property** (`IMPORTED_LOCATION`).
    The `.dll.a` (or `.lib`) file's path belongs in `IMPORTED_IMPLIB`.
 
-   Meanwhile, we have no idea where the `libdep.dll` file is,
-   even though _that's_ what we're supposed to put into `IMPORTED_LOCATION`,
-   and which CMake needs the location of for runtime library management.
+   Meanwhile, we have no idea where the `dependency.dll` file is,
+   even though _that's_ what we're supposed to put into `IMPORTED_LOCATION`.
+   And CMake needs to have that path to do runtime library management.
 
 Running `fix_implib()` on a target addresses both of those problems.
 It takes the import library path from `IMPORTED_LOCATION`,
